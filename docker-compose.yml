@@ -1,14 +1,6 @@
 services:
   sig2m.api:
+    image: ${DOCKER_REGISTRY-}sig2mapi
     build:
       context: .
       dockerfile: SIG2M.API/Dockerfile
-    image: sig2mapi:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - ASPNETCORE_URLS=http://+:8080
-      - ASPNETCORE_ENVIRONMENT=Development
-    volumes:
-      - "${HOST_USERSECRETS_DIR}:/home/app/.microsoft/usersecrets:ro"
-      - "${HOST_HTTPS_DIR}:/home/app/.aspnet/https:ro"
