@@ -173,16 +173,14 @@ var app = builder.Build();
 // ============================================
 // CONFIGURAÇÃO DO PIPELINE HTTP
 // ============================================
-if (app.Environment.IsDevelopment())
+// Habilitar Swagger em todos os ambientes
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SIG2M API - Documentação");
-        c.RoutePrefix = string.Empty;
-        c.DocumentTitle = "SIG2M API - Documentação";
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SIG2M API - Documentação");
+    c.RoutePrefix = string.Empty;
+    c.DocumentTitle = "SIG2M API - Documentação";
+});
 
 // O redirecionamento HTTPS é tratado pelo proxy reverso (Easypanel)
 // app.UseHttpsRedirection();
