@@ -1,14 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SIG2M.Dominio.Interfaces.Repositorios.Autenticacao;
 using SIG2M.Dominio.Interfaces.Servicos.Autenticacao;
 using SIG2M.Dominio.Interfaces.Servicos.Conexao;
 using SIG2M.Servicos.Criptografia;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static SIG2M.Dominio.Models.Autenticacao.AutenticacaoModels;
 
 namespace SIG2M.Servicos.Autenticacao

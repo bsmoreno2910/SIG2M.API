@@ -8,7 +8,7 @@ namespace SIG2M.Dominio.Entidades
     public class Familia
     {
 
-        [Key]
+        [Key, Required]
         [Column("cod_familia")]
         public short CodFamilia { get; set; }
 

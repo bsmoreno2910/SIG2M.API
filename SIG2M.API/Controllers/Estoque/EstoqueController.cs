@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SIG2M.Dominio.Interfaces.Servicos.SaldoEstoque;
 
-namespace SIG2M.API.Controllers
+namespace SIG2M.API.Controllers.Estoque
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -39,6 +39,36 @@ namespace SIG2M.API.Controllers
             try
             {
                 var estoque = await _sSaldoEstoque.ObterPorAlmoxarifadoAsync(sigla);
+                return Ok(estoque);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Authorize]
+        [Route("v1/BuscarPorItem")]
+        public async Task<IActionResult> BuscarPorItem(string cod_material)
+        {
+            try
+            {
+                var estoque = await _sSaldoEstoque.ObterPorItemAsync(cod_material);
+                return Ok(estoque);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Authorize]
+        [Route("v1/BuscarPorAlmoxarifadoItem")]
+        public async Task<IActionResult> BuscarPorAlmoxarifadoItem(string sigla, string cod_material)
+        {
+            try
+            {
+                var estoque = await _sSaldoEstoque.ObterPorAlmoxarifadoEItemAsync(sigla, cod_material);
                 return Ok(estoque);
             }
             catch (Exception ex)

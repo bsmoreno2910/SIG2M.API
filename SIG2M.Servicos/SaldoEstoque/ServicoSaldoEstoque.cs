@@ -28,7 +28,19 @@ namespace SIG2M.Servicos.SaldoEstoque
         public async Task<IEnumerable<VwSaldoEstoque>> ObterPorAlmoxarifadoAsync(string sigla)
         {
             using var conn = await _conn.ConectarAsync();
-            return await _rSaldoEstoque.ObterPorAlmoxarifadoEItemAsync(sigla, conn);    
+            return await _rSaldoEstoque.ObterPorAlmoxarifadoAsync(sigla, conn);
+        }
+
+        public async Task<IEnumerable<VwSaldoEstoque>> ObterPorItemAsync(string cod_material)
+        {
+            using var conn = await _conn.ConectarAsync();
+            return await _rSaldoEstoque.ObterPorItemAsync(cod_material, conn);
+        }
+
+        public async Task<IEnumerable<VwSaldoEstoque>> ObterPorAlmoxarifadoEItemAsync(string sigla, string cod_material)
+        {
+            using var conn = await _conn.ConectarAsync();
+            return await _rSaldoEstoque.ObterPorAlmoxarifadoEItemAsync(sigla, cod_material, conn);
         }
     }
 }

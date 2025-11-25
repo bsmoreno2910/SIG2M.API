@@ -1,12 +1,7 @@
 ﻿using Dapper;
 using SIG2M.Dominio.Entidades;
 using SIG2M.Dominio.Interfaces.Repositorios.Almoxarifado;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SIG2M.Repositorios
 {

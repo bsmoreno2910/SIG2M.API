@@ -8,7 +8,7 @@ namespace SIG2M.Dominio.Entidades
     public class Material
     {
 
-        [Key]
+        [Key, Required]
         [Column("cod_material")]
         public int CodMaterial { get; set; }
 
@@ -40,5 +40,8 @@ namespace SIG2M.Dominio.Entidades
 
         [Column("data_exclusao")]
         public DateTime DataExclusao { get; set; }
+
+        [NotMapped]
+        public tbdDescricao Descricao { get; set; }
     }
 }

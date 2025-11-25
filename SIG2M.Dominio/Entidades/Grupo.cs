@@ -1,14 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.Text.Json.Serialization;
 namespace SIG2M.Dominio.Entidades
 {
     [Table("grupo")]
     public class Grupo
     {
 
-        [Key]
+        [Key, Required]
         [Column("cod_grupo")]
         public short CodGrupo { get; set; }
 
@@ -27,5 +27,7 @@ namespace SIG2M.Dominio.Entidades
 
         [Column("data_exclusao")]
         public DateTime DataExclusao { get; set; }
+        [NotMapped, JsonIgnore]
+        public IEnumerable<Subgrupo> SubGrupos { get; set; }
     }
 }

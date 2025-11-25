@@ -8,9 +8,8 @@ namespace SIG2M.Dominio.Entidades
     public class Setor
     {
 
-        [Key]
-        [Column("sigla")]
-        [Required]
+        [Key, Required]
+        [Column("sigla")] 
         [StringLength(10)]
         public string Sigla { get; set; }
 

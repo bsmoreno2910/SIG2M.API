@@ -1,10 +1,4 @@
-﻿using SIG2M.Dominio.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks; 
+﻿using System.Data;
 
 namespace SIG2M.Dominio.Interfaces.Repositorios.Almoxarifado
 {

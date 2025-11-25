@@ -47,12 +47,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 return context.Response.WriteAsync(result);
             }
         };
-    }); 
+    });
 
 // ============================================
 // CONFIGURAÇÃO DE CONTROLLERS
 // ============================================
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+}).AddNewtonsoftJson();
 
 
 

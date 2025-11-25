@@ -8,11 +8,11 @@ namespace SIG2M.Dominio.Entidades
     public class Expedicao
     {
 
-        [Key]
+        [Key, Required]
         [Column("lista")]
         public long Lista { get; set; }
 
-        [Key]
+        [Key, Required]
         [Column("contador")]
         public int Contador { get; set; }
 

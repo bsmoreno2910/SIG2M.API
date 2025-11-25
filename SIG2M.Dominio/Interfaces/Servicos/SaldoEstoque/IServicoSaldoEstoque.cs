@@ -12,5 +12,7 @@ namespace SIG2M.Dominio.Interfaces.Servicos.SaldoEstoque
     {
         Task<IEnumerable<VwSaldoEstoque>> ObterTodos();
         Task<IEnumerable<VwSaldoEstoque>> ObterPorAlmoxarifadoAsync(string sigla);
+        Task<IEnumerable<VwSaldoEstoque>> ObterPorItemAsync(string cod_material);
+        Task<IEnumerable<VwSaldoEstoque>> ObterPorAlmoxarifadoEItemAsync(string sigla, string cod_material);
     }
 }

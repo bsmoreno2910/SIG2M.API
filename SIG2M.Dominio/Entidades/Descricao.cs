@@ -8,7 +8,7 @@ namespace SIG2M.Dominio.Entidades
     public class tbdDescricao
     {
 
-        [Key]
+        [Key, Required]
         [Column("cod_material")]
         public int CodMaterial { get; set; }
 

@@ -1,6 +1,7 @@
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema; 
 
 namespace SIG2M.Dominio.Entidades
 {
@@ -8,7 +9,7 @@ namespace SIG2M.Dominio.Entidades
     public class Subgrupo
     {
 
-        [Key]
+        [Key, Required]
         [Column("cod_subgrupo")]
         public short CodSubgrupo { get; set; }
 
@@ -30,5 +31,9 @@ namespace SIG2M.Dominio.Entidades
 
         [Column("data_exclusao")]
         public DateTime DataExclusao { get; set; }
+
+
+        [NotMapped, JsonIgnore]
+        public IEnumerable<Familia> Familias { get; set; }
     }
 }
