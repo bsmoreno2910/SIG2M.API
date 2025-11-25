@@ -1,6 +1,0 @@
-services:
-  sig2m.api:
-    image: ${DOCKER_REGISTRY-}sig2mapi
-    build:
-      context: .
-      dockerfile: SIG2M.API/Dockerfile
