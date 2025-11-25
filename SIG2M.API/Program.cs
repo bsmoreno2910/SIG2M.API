@@ -1,14 +1,55 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SIG2M.IOCS; 
+using Serilog;
+using SIG2M.IOCS;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ============================================
+// CONFIGURA√á√ÉO DE AMBIENTE E LOGGING
+// ============================================
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("/data/logs/sig2m-api-.txt",
+        rollingInterval: RollingInterval.Day,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // ============================================
-// CONFIGURA«√O DE AUTENTICA«√O JWT
+// VALIDA√á√ÉO DE CONFIGURA√á√ïES OBRIGAT√ìRIAS
+// ============================================
+var jwtKey = builder.Configuration["Jwt:Key"];
+var dbConnectionString = builder.Configuration["ConnectionStrings:Suprimentos"];
+
+if (string.IsNullOrEmpty(jwtKey) || string.IsNullOrEmpty(dbConnectionString))
+{
+    throw new InvalidOperationException("Vari√°veis de ambiente obrigat√≥rias n√£o configuradas: Jwt:Key, ConnectionStrings:Suprimentos");
+}
+
+// ============================================
+// CONFIGURA√á√ÉO DO DATA PROTECTION
+// ============================================
+var keysPath = Path.Combine("/data", "dataprotection-keys");
+Directory.CreateDirectory(keysPath);
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+    .SetApplicationName("SIG2M.API");
+
+// ============================================
+// CONFIGURA√á√ÉO DE AUTENTICA√á√ÉO JWT
 // ============================================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -21,19 +62,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-            ClockSkew = TimeSpan.Zero // Remove toler‚ncia padr„o de 5 minutos
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
         };
-
-        // Tratamento de eventos de autenticaÁ„o
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
             {
                 if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                 {
-                    context.Response.Headers.Add("Token-Expired", "true");
+                    context.Response.Headers.Append("Token-Expired", "true");
                 }
                 return Task.CompletedTask;
             },
@@ -43,40 +81,37 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 context.Response.StatusCode = 401;
                 context.Response.ContentType = "application/json";
                 var result = System.Text.Json.JsonSerializer.Serialize(
-                    new { error = "VocÍ n„o est· autorizado a acessar este recurso" });
+                    new { error = "Voc√™ n√£o est√° autorizado a acessar este recurso" });
                 return context.Response.WriteAsync(result);
             }
         };
     });
 
 // ============================================
-// CONFIGURA«√O DE CONTROLLERS
+// CONFIGURA√á√ÉO DE CONTROLLERS
 // ============================================
 builder.Services.AddControllers(options =>
 {
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 }).AddNewtonsoftJson();
 
-
-
 // ============================================
-// CONFIGURA«√O DO SWAGGER COM JWT
+// CONFIGURA√á√ÉO DO SWAGGER COM JWT
 // ============================================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "SIG2M API - DocumentaÁ„o",
+        Title = "SIG2M API - Documenta√ß√£o",
         Version = "v1",
-        Description = "API para IntegraÁ„o ao Sistema SIG2M",
-        License = new OpenApiLicense { 
-            Name = "Prefeitura Munincipal de Campinas", 
+        Description = "API para Integra√ß√£o ao Sistema SIG2M",
+        License = new OpenApiLicense
+        {
+            Name = "Prefeitura Municipal de Campinas",
             Url = new Uri("https://campinas.sp.gov.br/")
         }
     });
-
-    // Definir esquema de seguranÁa JWT Bearer
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -84,14 +119,12 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = @"AutenticaÁ„o JWT usando o esquema Bearer.
-                      
-Entre com 'Bearer' [espaÁo] e ent„o seu token na caixa de texto abaixo.
-                      
+        Description = @"Autentica√ß√£o JWT usando o esquema Bearer.
+
+Entre com 'Bearer' [espa√ßo] e ent√£o seu token na caixa de texto abaixo.
+
 Exemplo: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
     });
-
-    // Adicionar requisito de seguranÁa global
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -103,45 +136,60 @@ Exemplo: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
 // ============================================
-// CONFIGURA«√O DE CORS
+// CONFIGURA√á√ÉO DE CORS
 // ============================================
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder => builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("AllowSpecificOrigins",
+        policyBuilder =>
+        {
+            if (allowedOrigins.Contains("*"))
+            {
+                policyBuilder.AllowAnyOrigin()
+                             .AllowAnyMethod()
+                             .AllowAnyHeader();
+            }
+            else
+            {
+                policyBuilder.WithOrigins(allowedOrigins)
+                             .AllowAnyMethod()
+                             .AllowAnyHeader();
+            }
+        });
 });
 
 builder.Services.ConfigurarServicos(builder.Configuration);
+
 var app = builder.Build();
 
 // ============================================
-// CONFIGURA«√O DO PIPELINE HTTP
+// CONFIGURA√á√ÉO DO PIPELINE HTTP
 // ============================================
 if (app.Environment.IsDevelopment())
 {
-    // Habilitar middleware do Swagger
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SIG2M API - DocumentaÁ„o");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SIG2M API - Documenta√ß√£o");
         c.RoutePrefix = string.Empty;
-        c.DocumentTitle = "SIG2M API - DocumentaÁ„o";
+        c.DocumentTitle = "SIG2M API - Documenta√ß√£o";
     });
 }
 
-//app.UseHttpsRedirection();
+// O redirecionamento HTTPS √© tratado pelo proxy reverso (Easypanel)
+// app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseSerilogRequestLogging();
+
+app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();
