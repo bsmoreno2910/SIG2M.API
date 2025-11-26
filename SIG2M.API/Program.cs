@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using SIG2M.API.Utils;
 using SIG2M.IOCS;
 using System.Text;
 
@@ -16,16 +17,18 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.File("/data/logs/sig2m-api-.txt",
-        rollingInterval: RollingInterval.Day,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .CreateLogger();
+builder.Services.ConfigurarLogger(builder.Configuration, "SIG2M - API");
 
-builder.Host.UseSerilog();
+//Log.Logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration)
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console()
+//    .WriteTo.File("/data/logs/sig2m-api-.txt",
+//        rollingInterval: RollingInterval.Day,
+//        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+//    .CreateLogger();
+
+//builder.Host.UseSerilog();
 
 // ============================================
 // VALIDAÇÃO DE CONFIGURAÇÕES OBRIGATÓRIAS
