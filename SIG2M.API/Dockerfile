@@ -29,6 +29,13 @@ RUN dotnet publish "./SIG2M.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish 
 
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
 FROM base AS final
+
+# Trocar para root para criar os diretórios
+USER root
+RUN mkdir -p /data/dataprotection-keys /data/logs && chmod -R 777 /data
+
+# Voltar para o usuário app
+USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SIG2M.API.dll"]
