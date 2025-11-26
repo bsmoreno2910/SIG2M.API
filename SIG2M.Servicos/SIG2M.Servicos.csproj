@@ -13,12 +13,17 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.1" />
-    <PackageReference Include="MySql.Data" Version="9.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SIG2M.Dominio\SIG2M.Dominio.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MySqlConnector">
+      <HintPath>..\..\..\..\.nuget\packages\mysqlconnector\2.5.0\lib\net9.0\MySqlConnector.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

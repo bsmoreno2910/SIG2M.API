@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
 using SIG2M.Dominio.Enums;
 using SIG2M.Dominio.Interfaces.Servicos.Conexao;
 using SIG2M.Servicos.Criptografia;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySqlConnector;
 
 namespace SIG2M.Servicos.Conexao
 {
