@@ -5,6 +5,7 @@ using SIG2M.Dominio.Interfaces.Repositorios.Autenticacao;
 using SIG2M.Dominio.Interfaces.Repositorios.Expedicao;
 using SIG2M.Dominio.Interfaces.Repositorios.Grupos;
 using SIG2M.Dominio.Interfaces.Repositorios.Material;
+using SIG2M.Dominio.Interfaces.Repositorios.Movimento;
 using SIG2M.Dominio.Interfaces.Repositorios.SaldoEstoque;
 using SIG2M.Dominio.Interfaces.Repositorios.Setor;
 using SIG2M.Dominio.Interfaces.Servicos.Autenticacao;
@@ -12,6 +13,7 @@ using SIG2M.Dominio.Interfaces.Servicos.Conexao;
 using SIG2M.Dominio.Interfaces.Servicos.Expedicao;
 using SIG2M.Dominio.Interfaces.Servicos.Grupos;
 using SIG2M.Dominio.Interfaces.Servicos.Material;
+using SIG2M.Dominio.Interfaces.Servicos.Movimento;
 using SIG2M.Dominio.Interfaces.Servicos.SaldoEstoque;
 using SIG2M.Dominio.Interfaces.Servicos.Setor;
 using SIG2M.Repositorios;
@@ -19,6 +21,7 @@ using SIG2M.Repositorios.Autenticacao;
 using SIG2M.Repositorios.Expedicao;
 using SIG2M.Repositorios.Grupos;
 using SIG2M.Repositorios.Material;
+using SIG2M.Repositorios.Movimento;
 using SIG2M.Repositorios.SaldoEstoque;
 using SIG2M.Repositorios.Setor;
 using SIG2M.Servicos.Autenticacao;
@@ -26,6 +29,7 @@ using SIG2M.Servicos.Conexao;
 using SIG2M.Servicos.Expedicao;
 using SIG2M.Servicos.Grupos;
 using SIG2M.Servicos.Material;
+using SIG2M.Servicos.Movimento;
 using SIG2M.Servicos.SaldoEstoque;
 using SIG2M.Servicos.Setor;
 using SIG2M.Servicos.Utils;
@@ -66,6 +70,7 @@ namespace SIG2M.IOCS
             servicos.AddTransient<IServicoSubGrupos, ServicoSubGrupos>();
             servicos.AddTransient<IServicoFamilias, ServicoFamilias>();
             servicos.AddTransient<IServicoMateriais, ServicoMateriais>();
+            servicos.AddTransient<IServicoMovimento, ServicoMovimento>();
             servicos.AddTransient<IServicoSetor, ServicoSetor>();
             #endregion
 
@@ -78,6 +83,7 @@ namespace SIG2M.IOCS
             servicos.AddTransient<IRepositorioSubgrupo, RepositorioSubgrupo>(); 
             servicos.AddTransient<IRepositorioFamilia, RepositorioFamilia>(); 
             servicos.AddTransient<IRepositorioMaterial, RepositorioMaterial>(); 
+            servicos.AddTransient<IRepositorioMovimento, RepositorioMovimento>(); 
             servicos.AddTransient<IRepositorioSetor, RepositorioSetor>(); 
             #endregion
 

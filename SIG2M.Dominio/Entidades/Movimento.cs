@@ -8,11 +8,11 @@ namespace SIG2M.Dominio.Entidades
     public class Movimento
     {
 
-        [Key]
+        [Required]
         [Column("ano")]
         public short Ano { get; set; }
 
-        [Key]
+        [Key, Required]
         [Column("cod_movimento")]
         public int CodMovimento { get; set; }
 
