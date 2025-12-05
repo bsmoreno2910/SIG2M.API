@@ -41,7 +41,9 @@ if (string.IsNullOrEmpty(jwtKey) || string.IsNullOrEmpty(dbConnectionString))
 // ============================================
 // CONFIGURAÇÃO DO DATA PROTECTION
 // ============================================
-var keysPath = Path.Combine("/data", "dataprotection-keys");
+var keysPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "data",
+    "dataprotection-keys");
+// var keysPath = Path.Combine("/data", "dataprotection-keys");
 Directory.CreateDirectory(keysPath);
 
 builder.Services.AddDataProtection()
